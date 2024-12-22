@@ -1,8 +1,13 @@
-
 <main class="main">
   <div class="content">
-    PDF VIEWER
-    <canvas #canvas id="canvas" [width]="width" [height]="height"></canvas>
+    <h1>PDF VIEWER</h1>
+    <input type="file" accept="application/pdf" (change)="onFileChanged($event)">
+    <!-- <pdf-viewer *ngIf="isBrowser" [src]="pdfUrl"></pdf-viewer> -->
+    <!-- <ngx-extended-pdf-viewer *ngIf="isBrowser"
+      [src]="'public/A1_SD1_Wortliste_02.pdf'"></ngx-extended-pdf-viewer> -->
+
+    <ngx-extended-pdf-viewer [src]="pdf" *ngIf="pdf" theme="dark">
+    </ngx-extended-pdf-viewer>
   </div>
 </main>
 
