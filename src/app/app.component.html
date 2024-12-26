@@ -1,14 +1,36 @@
+<nav id="header">
+  <a routerLink="/">Home</a>
+  <a routerLink="/list">List</a>
+  <a routerLink="/reader">Reader</a>
+</nav>
 <main class="main">
   <div class="content">
-    <h1>PDF VIEWER</h1>
-    <input type="file" accept="application/pdf" (change)="onFileChanged($event)">
-    <!-- <pdf-viewer *ngIf="isBrowser" [src]="pdfUrl"></pdf-viewer> -->
-    <!-- <ngx-extended-pdf-viewer *ngIf="isBrowser"
-      [src]="'public/A1_SD1_Wortliste_02.pdf'"></ngx-extended-pdf-viewer> -->
+    <!-- <button (click)="reset()">Reset</button> -->
 
-    <ngx-extended-pdf-viewer [src]="pdf" *ngIf="pdf" theme="dark">
-    </ngx-extended-pdf-viewer>
+    <!-- <div>{{ databaseService.sequenceSignal() }}</div> -->
+    <!-- <div>{{ databaseService.sequence$ | async }}</div> -->
+
+
+    <!-- <input type="text" [(ngModel)]="text"/> -->
+    <!-- <input type="file" accept="application/pdf" (change)="onFileChanged($event)"> -->
+    <!-- <button (click)="onIncrement()">Increment</button> -->
+    <div style="display: flex;" *ngIf="debug">
+      <button (click)="obs1.next(i_1)">Obsever 1</button>
+      <button (click)="obs2.next(i_2)">Obsever 2</button>
+      <button (click)="obs3.next(i_2)">Obsever 3</button>
+      <button (click)="obs4.next(i_2)">Obsever 4</button>
+    </div>
+    <div style="display: flex;" *ngIf="debug">
+      <button (click)="obs1.complete()">Obsever 1 close</button>
+      <button (click)="obs2.complete()">Obsever 2 close</button>
+      <button (click)="obs3.complete()">Obsever 3 close</button>
+      <button (click)="obs4.complete()">Obsever 4 close</button>
+    </div>
+
+    <!-- <button (click)="save()">Save</button> -->
   </div>
+
+  <!-- <ngx-extended-pdf-viewer *ngIf="src" [src]="src"> </ngx-extended-pdf-viewer> -->
 </main>
 
-<router-outlet />
+<router-outlet *ngIf="true"/>

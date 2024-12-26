@@ -1,58 +1,71 @@
-import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { AfterViewInit, ChangeDetectionStrategy, Component, Inject, inject, OnInit, PLATFORM_ID } from '@angular/core';
-import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import { RouterOutlet } from '@angular/router';
-import { NgxExtendedPdfViewerModule, NgxExtendedPdfViewerService } from 'ngx-extended-pdf-viewer';
+import { AfterViewInit, Component, effect, inject, OnInit, Signal } from '@angular/core';
+import { RouterModule, RouterOutlet } from '@angular/router';
+import { DatabaseService, PdfDto } from './service/database.service';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
+import { combineLatest, concat, interval, map, of, share, shareReplay, Subject, switchMap, take, tap, withLatestFrom } from 'rxjs';
 
 @Component({
   selector: 'app-root',
-  imports: [
-    RouterOutlet,
-    CommonModule,
-    NgxExtendedPdfViewerModule,
-  ],
+  imports: [RouterModule, RouterOutlet, CommonModule, FormsModule, NgxExtendedPdfViewerModule],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
-  providers: [NgxExtendedPdfViewerService],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  standalone: true,
+
 })
-export class AppComponent implements OnInit, AfterViewInit {
-  title: string = 'pdf-viewer';
-  sanitizer: DomSanitizer = inject(DomSanitizer);
-  pdfUrl?: SafeResourceUrl = undefined;
-  pdf: Blob | string | undefined = undefined;
-  isBrowser: boolean = false;
+export class AppComponent implements AfterViewInit {
+  title = 'pdf-viewer';
+  databaseService: DatabaseService = inject(DatabaseService);
 
-  constructor(@Inject(PLATFORM_ID) private platformId: object) {
-    this.isBrowser = isPlatformBrowser(this.platformId) && typeof window !== 'undefined' && typeof document !== 'undefined';
-    console.log(this.isBrowser);
+  debug: boolean = false;
+  obs1 = new Subject<number>();
+  obs2 = new Subject<number>();
+  obs3 = new Subject<number>();
+  obs4 = new Subject<number>();
+  i1: number = 0;
+  i2: number = 0;
+  i3: number = 0;
+  i4: number = 0;
+
+  get i_1(): number { return this.i1++; }
+  get i_2(): number { return this.i2++; }
+  get i_3(): number { return this.i3++; }
+  get i_4(): number { return this.i4++; }
+
+  constructor() {
+    this.obs1.subscribe((value) => console.log("Observer 1: " + value));
+    this.obs2.subscribe((value) => console.log("Observer 2: " + value));
+    this.obs3.subscribe((value) => console.log("Observer 3: " + value));
+    this.obs4.subscribe((value) => console.log("Observer 4: " + value));
+    // concat([
+    //   this.obs1,
+    //   this.obs2
+    // ]).pipe(
+    //   tap((value) => console.log('atp' + value)),
+    // )
+
+    // this.obs1.pipe(switchMap((value) => {
+    //   console.log("Switchmap");
+    //   console.log(value);
+    //   return this.obs2;
+    // }))
+    // .subscribe((value) => {
+    //   console.log("Switchmap subscribe");
+    //   console.log(value);
+    // });
   }
 
-  ngOnInit(): void {
-    if (!isPlatformBrowser(this.platformId) || typeof window === 'undefined' || typeof document === 'undefined') {
-      return;
-    }
-    this.pdf = localStorage.getItem('pdf') ?? undefined;
-    debugger;
-  }
-  
   ngAfterViewInit(): void {
   }
 
-  public onFileChanged(event: Event): void {
-    if (!isPlatformBrowser(this.platformId) || typeof window === 'undefined' || typeof document === 'undefined') {
-      return;
-    }
-    const input = event.target as HTMLInputElement;
-    if (input.files && input.files.length > 0) {
-      const file = input.files[0];
-      // this.pdf = file;
-      const blob = new Blob([file], { type: file.type });
-      const url = URL.createObjectURL(blob);
-      this.pdf = url;
-      localStorage.setItem("pdf", url);
-      this.pdf = localStorage.getItem('pdf') ?? undefined;
-    }
+  public onIncrement(): void {
+    console.log("Increment first");
+    this.databaseService.incrementSequence$.next();
+  }
+
+  public async reset(): Promise<void> {
+    await this.databaseService.reset();
   }
 
 }

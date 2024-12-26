@@ -1,0 +1,13 @@
+<div class="card-list-container">
+    <div class="buttons">
+        SOME BUTTONS HERE?
+        <input type="file" accept="application/pdf" (change)="onFileChanged($event)">
+        <button (click)="onScroll()">Scroll</button>
+    </div>
+    <div>Count: {{ count | async }}</div>
+
+    <div class="cards">
+        <app-card *ngFor="let pdf of pdfs$ | async; trackBy: trackByFn" [pdf]="pdf" (delete)="onDelete($event)">
+        </app-card>
+    </div>
+</div>
